@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>PrePress Tracker</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f3f5f8;--card:#fff;--tx:#18212f;--mu:#667085;--bd:#e0e5ec;--pr:#0e7490;--pr2:#0891b2;--side:#10202e;--c:#00a6d6;--m:#d6246e;--y:#e8b900;--k:#222}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d141c;--card:#16202b;--tx:#e6ecf3;--mu:#92a1b3;--bd:#263443;--side:#0a1117}}
+:root[data-theme="dark"]{--bg:#0d141c;--card:#16202b;--tx:#e6ecf3;--mu:#92a1b3;--bd:#263443;--side:#0a1117}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.45 system-ui,"Segoe UI",Roboto,sans-serif}
+.cmyk{height:4px;background:linear-gradient(90deg,var(--c) 25%,var(--m) 25% 50%,var(--y) 50% 75%,var(--k) 75%)}
+#app{display:flex;min-height:100vh}
+aside{width:224px;background:var(--side);color:#cbd5e1;padding:14px 10px;flex-shrink:0;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow:auto}
+aside h1{font-size:17px;color:#fff;margin:4px 8px 14px;letter-spacing:.3px}aside h1 span{color:var(--c)}
+aside a{display:block;padding:9px 12px;border-radius:7px;color:#cbd5e1;cursor:pointer;margin:1px 0}aside a:hover{background:#ffffff14}aside a.on{background:var(--pr);color:#fff}
+aside .me{margin-top:auto;padding:10px 8px;font-size:12px;border-top:1px solid #ffffff22}
+main{flex:1;min-width:0;padding:20px}
+.top{display:none;background:var(--side);color:#fff;padding:10px 14px;align-items:center;gap:10px}
+h2{margin:0 0 16px;font-size:21px}h3{margin:0 0 10px;font-size:15px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:16px;margin-bottom:16px}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));margin-bottom:16px}
+.stat{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:12px 14px;border-left:4px solid var(--pr);cursor:pointer}.stat b{font-size:26px;display:block}.stat span{color:var(--mu);font-size:12px}
+.stat.r{border-left-color:#dc2626}.stat.o{border-left-color:#ea580c}.stat.g{border-left-color:#16a34a}
+.row{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+label{display:block;font-size:12px;font-weight:600;color:var(--mu);margin:0 0 4px}.req{color:#dc2626}
+input,select,textarea{width:100%;padding:8px 10px;border:1px solid var(--bd);border-radius:7px;background:var(--bg);color:var(--tx);font:inherit}
+input[type=checkbox],input[type=radio]{width:auto}textarea{min-height:90px}
+.btn{background:var(--pr);color:#fff;border:0;border-radius:7px;padding:8px 14px;cursor:pointer;font:inherit;font-weight:600}.btn:hover{background:var(--pr2)}
+.btn.s{background:var(--bg);color:var(--tx);border:1px solid var(--bd)}.btn.d{background:#dc2626}.btn.x{padding:4px 8px;font-size:12px}
+.tw{overflow-x:auto}table{width:100%;border-collapse:collapse;white-space:nowrap}th{text-align:left;font-size:11px;text-transform:uppercase;color:var(--mu);padding:8px;border-bottom:2px solid var(--bd)}td{padding:8px;border-bottom:1px solid var(--bd)}tr:hover td{background:#0891b210}
+.b{display:inline-block;padding:2px 9px;border-radius:99px;font-size:11px;font-weight:700;background:#e5e7eb;color:#374151}
+.b.New{background:#dbeafe;color:#1d4ed8}.b.In{background:#fef3c7;color:#92400e}.b.Wait{background:#ede9fe;color:#6d28d9}.b.Pend{background:#ffedd5;color:#c2410c}.b.App{background:#dcfce7;color:#15803d}.b.Rev{background:#fee2e2;color:#b91c1c}.b.Comp{background:#ccfbf1;color:#0f766e}
+.b.urg{background:#dc2626;color:#fff;animation:p 1.4s infinite}.b.od{background:#111;color:#fecaca}.b.hi{background:#fed7aa;color:#9a3412}
+@keyframes p{50%{opacity:.65}}
+.bar{display:flex;align-items:center;gap:8px;margin:5px 0}.bar i{display:block;height:14px;background:var(--pr2);border-radius:4px;min-width:2px}.bar em{width:130px;font-style:normal;font-size:12px;color:var(--mu);overflow:hidden;text-overflow:ellipsis}
+.drop{border:2px dashed var(--bd);border-radius:10px;padding:22px;text-align:center;color:var(--mu);cursor:pointer}.drop.on{border-color:var(--pr);background:#0891b214}
+.tl{border-left:2px solid var(--bd);margin-left:6px;padding-left:14px}.tl div{margin-bottom:10px;position:relative}.tl div:before{content:"";position:absolute;left:-20px;top:5px;width:10px;height:10px;border-radius:50%;background:var(--pr)}
+.fin{display:flex;align-items:center;gap:8px;padding:6px 10px;border:1px solid var(--bd);border-radius:7px}.fin select{width:80px;padding:3px}
+.mod{position:fixed;inset:0;background:#0009;display:flex;align-items:center;justify-content:center;padding:16px;z-index:9}.mod>div{background:var(--card);padding:20px;border-radius:12px;width:420px;max-width:100%}
+.login{max-width:380px;margin:9vh auto;padding:0 16px}.toast{position:fixed;bottom:20px;right:20px;background:#111;color:#fff;padding:10px 16px;border-radius:8px;z-index:20}
+.fl{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.mu{color:var(--mu)}
+@media(max-width:800px){aside{position:fixed;left:-240px;z-index:8;transition:.2s}aside.open{left:0}.top{display:flex}main{padding:12px}}
+</style></head><body><div class="cmyk"></div><div id="root"></div>
+<script>
+const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const DEF={users:[],jobs:[],seq:600000,set:{statuses:['New','In Progress','Waiting for Customer','Pending Approval','Approved','Revision Required','On Hold','Completed','Cancelled'],processes:['Digital','Offset'],types:['Label','Packaging','Book','Book Cover','Other'],fin:['Lamination','UV','Spot UV','Foiling','Die Cut','Emboss','Window Cut','Texture UV']}};
+let D;try{D=JSON.parse(localStorage.getItem('pp'))||DEF}catch(e){D=DEF}
+const save=()=>{try{localStorage.setItem('pp',JSON.stringify(D))}catch(e){toast('Storage full')}};
+let me=null;try{const s=sessionStorage.getItem('ppu');me=s&&D.users.find(u=>u.id==s&&u.status=='active')||null}catch(e){}
+let V='dash',A=null,Q={q:'',date:'',des:'',proc:'',type:'',prio:'',dl:'',st:'',od:0,page:1};
+const PS=15,ALLOWED='pdf ai eps psd tif tiff jpg jpeg png zip rar doc docx xls xlsx'.split(' '),MAXF=100*1048576;
+const isA=()=>me&&me.role=='Admin',now=()=>new Date(),uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const fmt=d=>{d=new Date(d);return isNaN(d)?'—':d.toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'})+' – '+d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'})};
+const fd=d=>d?new Date(d).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})+' '+new Date(d).toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'}):'—';
+const od=j=>j.dl&&new Date(j.dl)<now()&&!['Completed','Cancelled'].includes(j.status);
+const sc=s=>({'New':'New','In Progress':'In','Waiting for Customer':'Wait','Pending Approval':'Pend','Approved':'App','Revision Required':'Rev','Completed':'Comp'}[s]||'');
+const sb=s=>`<span class="b ${sc(s)}">${esc(s)}</span>`;
+const pb=j=>(j.prio=='Urgent'?'<span class="b urg">URGENT</span> ':j.prio=='High'?'<span class="b hi">High</span> ':'')+(od(j)?'<span class="b od">OVERDUE</span>':'');
+function toast(t){const e=document.createElement('div');e.className='toast';e.textContent=t;document.body.appendChild(e);setTimeout(()=>e.remove(),2800)}
+async function hash(p,s){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s+':'+p));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+// file blobs in IndexedDB
+const idb=()=>new Promise((r,j)=>{const q=indexedDB.open('ppfiles',1);q.onupgradeneeded=()=>q.result.createObjectStore('f');q.onsuccess=()=>r(q.result);q.onerror=()=>j(q.error)});
+async function fdb(m,k,v){const d=await idb();return new Promise((r,j)=>{const t=d.transaction('f',m=='get'?'readonly':'readwrite').objectStore('f');const q=m=='get'?t.get(k):m=='put'?t.put(v,k):t.delete(k);q.onsuccess=()=>r(q.result);q.onerror=()=>j(q.error)})}
+// ---- auth
+async function setup(e){e.preventDefault();const f=e.target,s=uid(),n=f.n.value.trim(),u=f.u.value.trim().toLowerCase();
+ if(f.p.value.length<6)return toast('Password min 6 characters');
+ D.users.push({id:uid(),name:n,user:u,salt:s,pw:await hash(f.p.value,s),role:'Admin',status:'active',at:now().toISOString()});save();toast('Admin created. Please log in.');render()}
+async function login(e){e.preventDefault();const f=e.target,u=D.users.find(x=>x.user==f.u.value.trim().toLowerCase());
+ if(!u||u.status!='active'||u.pw!=await hash(f.p.value,u.salt))return toast('Invalid credentials or disabled account');
+ me=u;try{sessionStorage.setItem('ppu',u.id)}catch(e){}V='dash';render()}
+function logout(){me=null;try{sessionStorage.removeItem('ppu')}catch(e){}render()}
+// ---- shell
+const NAV=[['dash','Dashboard'],['new','Create Job'],['list','All Jobs'],['pend','Pending Approval'],['urg','Urgent Jobs'],['over','Overdue Jobs'],['comp','Completed Jobs'],['users','Users',1],['set','Settings',1]];
+function go(v,a){V=v;A=a;document.querySelector('aside')?.classList.remove('open');
+ if(v=='list'&&!a)Q={q:'',date:'',des:'',proc:'',type:'',prio:'',dl:'',st:'',od:0,page:1};
+ const P={pend:{st:'Pending Approval'},urg:{prio:'Urgent'},over:{od:1},comp:{st:'Completed'}};
+ if(P[v]){Q={q:'',date:'',des:'',proc:'',type:'',prio:'',dl:'',st:'',od:0,page:1,...P[v]};V='list';A=v}
+ render()}
+function render(){const R=$('#root');
+ if(!D.users.length){R.innerHTML=`<div class="login"><div class="card"><h2>Welcome — create Admin account</h2><p class="mu">First-time setup. This account will manage users and settings.</p><form onsubmit="setup(event)"><label>Full Name <span class="req">*</span></label><input name="n" required><br><br><label>Username <span class="req">*</span></label><input name="u" required><br><br><label>Password <span class="req">*</span></label><input name="p" type="password" required><br><br><button class="btn" style="width:100%">Create Admin</button></form></div></div>`;return}
+ if(!me){R.innerHTML=`<div class="login"><div class="card"><h2>Prepress<span style="color:var(--pr)">Tracker</span> — Sign in</h2><form onsubmit="login(event)"><label>Username</label><input name="u" required autofocus><br><br><label>Password</label><input name="p" type="password" required><br><br><button class="btn" style="width:100%">Login</button></form></div></div>`;return}
+ const nav=NAV.filter(n=>!n[2]||isA()).map(n=>`<a class="${(V==n[0]||A==n[0])?'on':''}" onclick="go('${n[0]}')">${n[1]}</a>`).join('');
+ R.innerHTML=`<div class="top"><button class="btn s" onclick="document.querySelector('aside').classList.toggle('open')">☰</button><b>PrepressTracker</b></div><div id="app"><aside><h1>Prepress<span>Tracker</span></h1>${nav}<div class="me">${esc(me.name)}<br><span class="mu">${me.role}</span><br><br><button class="btn s x" onclick="logout()">Logout</button></div></aside><main id="m"></main></div>`;
+ ({dash,new:()=>form(),list,view,users,set:settings})[V]();}
+const mine=()=>isA()?D.jobs:D.jobs.filter(j=>j.designer==me.name||j.by==me.id);
+// ---- dashboard
+function bars(o){const m=Math.max(1,...Object.values(o));return Object.entries(o).map(([k,v])=>`<div class="bar"><em>${esc(k)}</em><i style="width:${v/m*55}%"></i><b>${v}</b></div>`).join('')||'<span class="mu">No data</span>'}
+const cnt=(a,f)=>a.reduce((o,j)=>{const k=f(j);o[k]=(o[k]||0)+1;return o},{});
+function dash(){const J=mine(),t=now(),d0=new Date(t.getFullYear(),t.getMonth(),t.getDate()),w0=new Date(d0-((t.getDay()+6)%7)*864e5),c=s=>J.filter(j=>j.status==s).length;
+ const S=(n,l,cl,f)=>`<div class="stat ${cl||''}" onclick="${f||"go('list')"}"><b>${n}</b><span>${l}</span></div>`;
+ $('#m').innerHTML=`<div class="fl" style="justify-content:space-between;margin-bottom:14px"><h2 style="margin:0">Dashboard</h2><div class="fl"><button class="btn" onclick="go('new')">+ Create New Job</button><button class="btn s" onclick="go('list')">Search Jobs</button>${isA()?'<button class="btn s" onclick="go(\'users\')">Manage Users</button>':''}</div></div>
+ <div class="grid">${S(J.length,'Total Jobs')}${S(J.filter(j=>+new Date(j.at)>=d0).length,"Today's Jobs")}${S(J.filter(j=>+new Date(j.at)>=w0).length,"This Week's Jobs")}${S(c('New'),'New Jobs')}${S(c('In Progress'),'In Progress')}${S(c('Pending Approval'),'Pending Approval','o',"go('pend')")}${S(c('Approved'),'Approved','g')}${S(c('Completed'),'Completed','g',"go('comp')")}${S(J.filter(j=>j.prio=='Urgent'&&!['Completed','Cancelled'].includes(j.status)).length,'Urgent Jobs','r',"go('urg')")}${S(J.filter(od).length,'Overdue Jobs','r',"go('over')")}</div>
+ <div class="row"><div class="card"><h3>Jobs by Status</h3>${bars(cnt(J,j=>j.status))}</div><div class="card"><h3>Printing Process</h3>${bars(cnt(J,j=>j.proc||'—'))}</div><div class="card"><h3>Artwork Type</h3>${bars(cnt(J,j=>j.type==='Other'&&j.otype?'Other: '+j.otype:j.type))}</div><div class="card"><h3>Jobs by Designer</h3>${bars(cnt(J,j=>j.designer))}</div></div>
+ ${J.filter(od).length?`<div class="card" style="border-color:#dc2626"><h3 style="color:#dc2626">⚠ Overdue Jobs</h3>${table(J.filter(od).slice(0,8))}</div>`:''}
+ <div class="card"><h3>Recent Jobs</h3>${table([...J].sort((a,b)=>b.no-a.no).slice(0,10))}</div>`}
+function table(J){return `<div class="tw"><table><tr><th>Job No.</th><th>Created</th><th>Customer</th><th>Description</th><th>Process</th><th>Type</th><th>Designer</th><th>Priority</th><th>Deadline</th><th>Status</th><th>Files</th><th>Actions</th></tr>${J.map(j=>`<tr><td><b>${j.no}</b></td><td>${fd(j.at)}</td><td>${esc(j.cust)}</td><td style="max-width:200px;overflow:hidden;text-overflow:ellipsis">${esc(j.desc)}</td><td>${j.proc||'—'}</td><td>${esc(j.type==='Other'&&j.otype?j.otype:j.type)}</td><td>${esc(j.designer)}</td><td>${pb(j)||'Normal'}</td><td>${fd(j.dl)}</td><td>${sb(j.status)}</td><td>${j.files.length}</td><td><button class="btn s x" onclick="go('view',${j.no})">View</button> <button class="btn s x" onclick="go('new',${j.no})">Edit</button> <button class="btn s x" onclick="stM(${j.no})">Status</button> <button class="btn s x" onclick="go('view',${j.no})">Files</button>${isA()?` <button class="btn d x" onclick="delJ(${j.no})">Del</button>`:''}</td></tr>`).join('')||'<tr><td colspan="12" class="mu">No jobs found</td></tr>'}</table></div>`}
+// ---- list
+function list(){const S=D.set,o=a=>a.map(x=>`<option>${esc(x)}</option>`).join('');
+ $('#m').innerHTML=`<h2>${{pend:'Pending Approval',urg:'Urgent Jobs',over:'Overdue Jobs',comp:'Completed Jobs'}[A]||'All Jobs'}</h2><div class="card"><div class="row"><div style="grid-column:1/-1"><input id="fq" placeholder="Search customer, job number or description…" value="${esc(Q.q)}" oninput="sq('q',this.value)"></div>
+ <div><label>Created date</label><input type="date" value="${Q.date}" onchange="sq('date',this.value)"></div><div><label>Designer</label><select onchange="sq('des',this.value)"><option value="">All</option>${o(D.users.map(u=>u.name))}</select></div><div><label>Process</label><select onchange="sq('proc',this.value)"><option value="">All</option>${o(S.processes)}</select></div><div><label>Artwork type</label><select onchange="sq('type',this.value)"><option value="">All</option>${o(S.types)}</select></div><div><label>Priority</label><select onchange="sq('prio',this.value)"><option value="">All</option>${o(['Normal','High','Urgent'])}</select></div><div><label>Deadline on/before</label><input type="date" value="${Q.dl}" onchange="sq('dl',this.value)"></div><div><label>Status</label><select onchange="sq('st',this.value)"><option value="">All</option>${o(S.statuses)}</select></div></div></div><div class="card" id="lt"></div>`;
+ document.querySelectorAll('#m select').forEach(s=>{const k=['des','proc','type','prio','st'][[...document.querySelectorAll('#m select')].indexOf(s)];s.value=Q[k]});lt()}
+function sq(k,v){Q[k]=v;Q.page=1;lt()}
+function lt(){const q=Q.q.toLowerCase(),L=mine().filter(j=>(!q||String(j.no).includes(q)||j.cust.toLowerCase().includes(q)||j.desc.toLowerCase().includes(q))&&(!Q.date||j.at.slice(0,10)==Q.date||new Date(j.at).toLocaleDateString('en-CA')==Q.date)&&(!Q.des||j.designer==Q.des)&&(!Q.proc||j.proc==Q.proc)&&(!Q.type||j.type==Q.type)&&(!Q.prio||j.prio==Q.prio)&&(!Q.dl||(j.dl&&j.dl.slice(0,10)<=Q.dl))&&(!Q.st||j.status==Q.st)&&(!Q.od||od(j))).sort((a,b)=>b.no-a.no);
+ const pg=Math.max(1,Math.ceil(L.length/PS));Q.page=Math.min(Q.page,pg);
+ $('#lt').innerHTML=`<div class="mu" style="margin-bottom:8px">${L.length} job(s)</div>${table(L.slice((Q.page-1)*PS,Q.page*PS))}<div class="fl" style="margin-top:10px;justify-content:center"><button class="btn s x" ${Q.page<2?'disabled':''} onclick="Q.page--;lt()">‹ Prev</button><span>Page ${Q.page} / ${pg}</span><button class="btn s x" ${Q.page>=pg?'disabled':''} onclick="Q.page++;lt()">Next ›</button></div>`}
+// ---- form
+function form(){const e=A?D.jobs.find(j=>j.no==A):null,S=D.set;
+ if(e&&!isA()&&e.designer!=me.name&&e.by!=me.id){toast('Not permitted');return go('list')}
+ const j=e||{cust:'',desc:'',proc:'',type:'',otype:'',w:'',h:'',l:'',color:'CMYK',spots:[''],fin:{},prio:'Normal',dl:'',notes:'',designer:me.name};
+ const rd=(n,a,v)=>a.map(x=>`<label style="display:inline-flex;gap:5px;margin-right:14px;font-weight:500;color:var(--tx)"><input type="radio" name="${n}" value="${esc(x)}" ${v==x?'checked':''} onchange="sync()">${esc(x)}</label>`).join('');
+ $('#m').innerHTML=`<h2>${e?'Edit Job '+e.no:'Create New Job'}</h2><form id="jf" onsubmit="saveJ(event)">
+ <div class="card"><h3>Basic Job Information</h3><div class="row"><div><label>Job Number</label><input disabled value="${e?e.no:D.seq+' (auto)'}"></div><div><label>Date & Time</label><input disabled value="${e?fmt(e.at):'Recorded automatically on save'}"></div><div><label>Customer Name <span class="req">*</span></label><input name="cust" required value="${esc(j.cust)}"></div><div><label>Job Description <span class="req">*</span></label><input name="desc" required value="${esc(j.desc)}"></div></div></div>
+ <div class="card"><h3>Job Details</h3><label>Printing Process</label>${rd('proc',S.processes,j.proc)}<br><br><label>Artwork Type</label>${rd('type',S.types,j.type)}
+ <div id="ot" style="display:none;margin-top:10px"><label>Please specify artwork type</label><input name="otype" value="${esc(j.otype)}"></div>
+ <h3 style="margin-top:16px">Artwork Size (mm)</h3><div class="row"><div><label>Width</label><input name="w" type="number" min="0" step="any" value="${j.w}"></div><div><label>Height</label><input name="h" type="number" min="0" step="any" value="${j.h}"></div><div id="ln"><label>Length <span id="lo" class="mu"></span></label><input name="l" type="number" min="0" step="any" value="${j.l}"></div></div></div>
+ <div class="card"><h3>Colors</h3>${rd('color',['CMYK','Spot','CMYK + Spot'],j.color)}<div id="sp" style="margin-top:10px"><label>Spot Color Name(s)</label><div id="spl">${(j.spots.length?j.spots:['']).map((s,i)=>`<input class="spi" style="margin-bottom:6px" placeholder="e.g. Pantone 186 C" value="${esc(s)}">`).join('')}</div><button type="button" class="btn s x" onclick="addSp()">+ Add spot color</button></div></div>
+ <div class="card"><h3>Finishing</h3><div class="row">${S.fin.map(f=>`<div class="fin"><label style="margin:0;display:flex;gap:6px;flex:1;color:var(--tx)"><input type="checkbox" class="fc" value="${esc(f)}" ${j.fin[f]?'checked':''} onchange="sync()">${esc(f)}</label><select class="fs" data-f="${esc(f)}" style="display:none"><option>New</option><option ${j.fin[f]=='Old'?'selected':''}>Old</option></select></div>`).join('')}</div></div>
+ <div class="card"><h3>Production & Assignment</h3><div class="row"><div><label>Designer</label>${isA()?`<select name="designer">${D.users.filter(u=>u.status=='active').map(u=>`<option ${u.name==j.designer?'selected':''}>${esc(u.name)}</option>`).join('')}</select>`:`<input disabled value="${esc(j.designer)}">`}</div><div><label>Priority</label><select name="prio">${['Normal','High','Urgent'].map(p=>`<option ${p==j.prio?'selected':''}>${p}</option>`).join('')}</select></div><div><label>Deadline</label><input type="datetime-local" name="dl" value="${j.dl||''}"></div></div><br><label>Notes</label><textarea name="notes" placeholder="Production notes, customer instructions, special printing instructions…">${esc(j.notes)}</textarea></div>
+ <div class="fl"><button class="btn">${e?'Save Changes':'Create Job'}</button><button type="button" class="btn s" onclick="go('list')">Cancel</button><span class="mu">Approval files are uploaded on the job page after saving.</span></div></form>`;
+ document.querySelectorAll('.fs').forEach(s=>{if(j.fin[s.dataset.f])s.value=j.fin[s.dataset.f]});sync()}
+function addSp(){const i=document.createElement('input');i.className='spi';i.style.marginBottom='6px';i.placeholder='Spot color';$('#spl').appendChild(i)}
+const rv=n=>document.querySelector(`input[name=${n}]:checked`)?.value||'';
+function sync(){const t=rv('type');$('#ot').style.display=t=='Other'?'block':'none';$('#ln').style.display=(t=='Packaging'||t=='Other')?'block':'none';$('#lo').textContent=t=='Other'?'(optional)':'';$('#sp').style.display=rv('color').includes('Spot')?'block':'none';
+ document.querySelectorAll('.fc').forEach(c=>{c.closest('.fin').querySelector('.fs').style.display=c.checked?'block':'none'})}
+function saveJ(ev){ev.preventDefault();const f=ev.target,v=n=>f[n]?.value?.trim?.()??'';
+ if(!v('cust')||!v('desc'))return toast('Customer Name and Job Description are required');
+ const t=rv('type'),c=rv('color'),fin={};document.querySelectorAll('.fc:checked').forEach(c=>fin[c.value]=c.closest('.fin').querySelector('.fs').value);
+ const d={cust:v('cust'),desc:v('desc'),proc:rv('proc'),type:t,otype:t=='Other'?v('otype'):'',w:v('w'),h:v('h'),l:(t=='Packaging'||t=='Other')?v('l'):'',color:c,spots:c.includes('Spot')?[...document.querySelectorAll('.spi')].map(i=>i.value.trim()).filter(Boolean):[],fin,prio:v('prio'),dl:v('dl'),notes:f.notes.value,upd:now().toISOString()};
+ let j=A&&D.jobs.find(x=>x.no==A);
+ if(j)Object.assign(j,d,isA()&&f.designer?{designer:f.designer.value}:{});
+ else{j={no:D.seq++,at:now().toISOString(),...d,designer:isA()&&f.designer?f.designer.value:me.name,by:me.id,status:'New',files:[],hist:[{s:'New',by:me.name,at:now().toISOString(),n:'Job created'}]};D.jobs.push(j)}
+ save();toast('Job '+j.no+' saved');go('view',j.no)}
+// ---- status
+function stM(no){const j=D.jobs.find(x=>x.no==no);const m=document.createElement('div');m.className='mod';m.innerHTML=`<div><h3>Update status — ${no}</h3><label>New status</label><select id="ns">${D.set.statuses.map(s=>`<option ${s==j.status?'selected':''}>${esc(s)}</option>`).join('')}</select><br><br><label>Note (optional)</label><input id="nn"><br><br><div class="fl"><button class="btn" id="ok">Update</button><button class="btn s" id="cx">Cancel</button></div></div>`;document.body.appendChild(m);
+ m.querySelector('#cx').onclick=()=>m.remove();m.querySelector('#ok').onclick=()=>{const s=$('#ns').value;if(s!=j.status){j.status=s;j.upd=now().toISOString();j.hist.push({s,by:me.name,at:now().toISOString(),n:$('#nn').value})}save();m.remove();render()}}
+function delJ(no){if(!isA()||!confirm('Delete job '+no+' and its files?'))return;const j=D.jobs.find(x=>x.no==no);j.files.forEach(f=>fdb('del',f.id));D.jobs=D.jobs.filter(x=>x.no!=no);save();render()}
+// ---- view + files
+function view(){const j=D.jobs.find(x=>x.no==A);if(!j||(!isA()&&j.designer!=me.name&&j.by!=me.id)){toast('Job not found');return go('list')}
+ const dim=[j.w&&'W '+j.w,j.h&&'H '+j.h,j.l&&'L '+j.l].filter(Boolean).join(' × ')+' mm',kv=(k,v)=>`<div><label>${k}</label><div>${v||'—'}</div></div>`;
+ $('#m').innerHTML=`<div class="fl" style="justify-content:space-between"><h2>Job ${j.no} ${pb(j)}</h2><div class="fl"><button class="btn" onclick="stM(${j.no})">Update Status</button><button class="btn s" onclick="go('new',${j.no})">Edit</button><button class="btn s" onclick="history.length;go('list')">Back</button></div></div>
+ <div class="card"><h3>Job Information</h3><div class="row">${kv('Job Number',j.no)}${kv('Created',fmt(j.at))}${kv('Customer',esc(j.cust))}${kv('Description',esc(j.desc))}${kv('Status',sb(j.status))}</div></div>
+ <div class="card"><h3>Job Details</h3><div class="row">${kv('Printing Process',j.proc)}${kv('Artwork Type',esc(j.type==='Other'&&j.otype?'Other — '+j.otype:j.type))}${kv('Dimensions',dim)}${kv('Colors',j.color)}${kv('Spot Colors',j.spots.map((s,i)=>`${i+1}. ${esc(s)}`).join('<br>'))}${kv('Finishing',Object.entries(j.fin).map(([k,v])=>`${esc(k)} <span class="b">${v}</span>`).join('<br>'))}</div></div>
+ <div class="card"><h3>Production & Assignment</h3><div class="row">${kv('Designer',esc(j.designer))}${kv('Priority',j.prio)}${kv('Deadline',fmt(j.dl))}</div><br><label>Notes</label><div style="white-space:pre-wrap">${esc(j.notes)||'—'}</div></div>
+ <div class="card"><h3>Customer Approval Files (${j.files.length})</h3><div class="drop" id="dz" onclick="$('#fi').click()">Drag & drop files here or click to browse<br><small>PDF, AI, EPS, PSD, TIFF, JPG, PNG, ZIP, RAR, DOC/DOCX, XLS/XLSX — unlimited files, 100 MB each</small></div><input type="file" id="fi" multiple hidden><div class="tw" style="margin-top:10px"><table><tr><th>File</th><th>Type</th><th>Size</th><th>Uploaded by</th><th>Uploaded</th><th></th></tr>${j.files.map(f=>`<tr><td>${esc(f.name)}</td><td>${f.ext.toUpperCase()}</td><td>${(f.size/1048576).toFixed(2)} MB</td><td>${esc(f.by)}</td><td>${fd(f.at)}</td><td><button class="btn s x" onclick="dl(${j.no},'${f.id}')">Download</button> <button class="btn d x" onclick="delF(${j.no},'${f.id}')">Delete</button></td></tr>`).join('')||'<tr><td colspan="6" class="mu">No files uploaded</td></tr>'}</table></div></div>
+ <div class="card"><h3>Status History</h3><div class="tl">${[...j.hist].reverse().map(h=>`<div>${fd(h.at)} — ${sb(h.s)} <span class="mu">by ${esc(h.by)}${h.n?' · '+esc(h.n):''}</span></div>`).join('')}</div></div>`;
+ const dz=$('#dz');['dragover','dragenter'].forEach(t=>dz.addEventListener(t,e=>{e.preventDefault();dz.classList.add('on')}));['dragleave','drop'].forEach(t=>dz.addEventListener(t,e=>{e.preventDefault();dz.classList.remove('on')}));
+ dz.addEventListener('drop',e=>up(j,e.dataTransfer.files));$('#fi').onchange=e=>up(j,e.target.files)}
+async function up(j,fs){for(const f of fs){const x=f.name.split('.').pop().toLowerCase();
+ if(!ALLOWED.includes(x)){toast('Type not allowed: '+f.name);continue}if(f.size>MAXF){toast('Too large: '+f.name);continue}
+ const id=uid();try{await fdb('put',id,f)}catch(e){toast('Could not store '+f.name);continue}
+ j.files.push({id,name:f.name,ext:x,size:f.size,by:me.name,at:now().toISOString()})}save();view()}
+async function dl(no,id){const j=D.jobs.find(x=>x.no==no),f=j.files.find(x=>x.id==id),b=await fdb('get',id);if(!b)return toast('File data missing');
+ try{const d=await claude.use('downloads');if(!d)return toast('Downloads unavailable here');await d.save({filename:f.name,data:new Uint8Array(await b.arrayBuffer())})}catch(e){toast(e.code=='rejected_extension'?'This file type cannot be downloaded from this view':'Download not completed')}}
+async function delF(no,id){if(!confirm('Delete this file?'))return;const j=D.jobs.find(x=>x.no==no);await fdb('del',id);j.files=j.files.filter(f=>f.id!=id);save();view()}
+// ---- users
+function users(){if(!isA())return go('dash');
+ $('#m').innerHTML=`<div class="fl" style="justify-content:space-between"><h2>Users</h2><button class="btn" onclick="uM()">+ Add User</button></div><div class="card tw"><table><tr><th>Name</th><th>Username</th><th>Role</th><th>Status</th><th>Created</th><th>Actions</th></tr>${D.users.map(u=>`<tr><td>${esc(u.name)}</td><td>${esc(u.user)}</td><td>${u.role}</td><td>${u.status}</td><td>${fd(u.at)}</td><td><button class="btn s x" onclick="uM('${u.id}')">Edit</button> <button class="btn s x" onclick="uM('${u.id}',1)">Reset password</button> ${u.id!=me.id?`<button class="btn s x" onclick="tog('${u.id}')">${u.status=='active'?'Disable':'Enable'}</button> <button class="btn d x" onclick="delU('${u.id}')">Delete</button>`:''}</td></tr>`).join('')}</table></div>`}
+function uM(id,rp){const u=D.users.find(x=>x.id==id),m=document.createElement('div');m.className='mod';
+ m.innerHTML=`<div><h3>${rp?'Reset password':u?'Edit user':'Add user'}</h3><form id="uf">${rp?'':`<label>Full Name *</label><input name="n" required value="${esc(u?.name)}"><br><br><label>Username *</label><input name="u" required value="${esc(u?.user)}"><br><br><label>Role</label><select name="r"><option>Designer/User</option><option ${u?.role=='Admin'?'selected':''}>Admin</option></select><br><br>`}${(!u||rp)?'<label>Password * (min 6)</label><input name="p" type="password" required minlength="6"><br><br>':''}<div class="fl"><button class="btn">Save</button><button type="button" class="btn s" id="cx">Cancel</button></div></form></div>`;document.body.appendChild(m);m.querySelector('#cx').onclick=()=>m.remove();
+ m.querySelector('#uf').onsubmit=async e=>{e.preventDefault();const f=e.target;let x=u;
+  if(!rp){const nu=f.u.value.trim().toLowerCase();if(D.users.some(y=>y.user==nu&&y.id!=id))return toast('Username already exists');
+   if(!x){x={id:uid(),status:'active',at:now().toISOString()};D.users.push(x)}else if(x.name!=f.n.value.trim())D.jobs.forEach(j=>{if(j.designer==x.name)j.designer=f.n.value.trim()});
+   Object.assign(x,{name:f.n.value.trim(),user:nu,role:f.r.value})}
+  if(f.p){x.salt=uid();x.pw=await hash(f.p.value,x.salt)}save();m.remove();users()}}
+function tog(id){const u=D.users.find(x=>x.id==id);if(u.status=='active'&&u.role=='Admin'&&D.users.filter(x=>x.role=='Admin'&&x.status=='active').length<2)return toast('Cannot disable the last Admin');u.status=u.status=='active'?'disabled':'active';save();users()}
+function delU(id){const u=D.users.find(x=>x.id==id);if(u.role=='Admin'&&D.users.filter(x=>x.role=='Admin').length<2)return toast('Cannot delete the last Admin');if(confirm('Delete '+u.name+'? Their jobs are kept.')){D.users=D.users.filter(x=>x.id!=id);save();users()}}
+// ---- settings
+function settings(){if(!isA())return go('dash');const S=D.set,ta=(k,l)=>`<div><label>${l} (one per line)</label><textarea id="s_${k}" style="min-height:140px">${S[k].join('\n')}</textarea></div>`;
+ $('#m').innerHTML=`<h2>System Settings</h2><div class="card"><div class="row"><div><label>Next Job Number (default 600000)</label><input id="s_seq" type="number" min="1" value="${D.seq}"><div class="mu" style="font-size:12px">Can't be set at or below an existing job number.</div></div></div><br><div class="row">${ta('statuses','Status options')}${ta('processes','Printing processes')}${ta('types','Artwork types')}${ta('fin','Finishing options')}</div><br><button class="btn" onclick="saveS()">Save Settings</button></div>`}
+function saveS(){const L=k=>$('#s_'+k).value.split('\n').map(x=>x.trim()).filter(Boolean),mx=Math.max(0,...D.jobs.map(j=>j.no)),n=+$('#s_seq').value;
+ if(n<=mx)return toast('Next number must be greater than '+mx);if(!L('statuses').includes('New'))return toast('Status list must include "New"');
+ D.seq=n;['statuses','processes','types','fin'].forEach(k=>D.set[k]=L(k));save();toast('Settings saved')}
+render();
+</script></body></html>
